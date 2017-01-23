@@ -12,7 +12,9 @@ module.exports = function(params)
 		postVar: 'rpc',
 		socketIo: false,
 		gateway: false,
-		versions: false
+		versions: false,
+		socketIo_debug_level: 3,
+		socketIo_transports: ['websocket', 'flashsocket', 'xhr-polling']
 	};
 
 	var _url = require('url');
@@ -121,7 +123,9 @@ module.exports = function(params)
 	// Activate websockets?
 	if (config.socketIo == true)
 	{
-		var io = require('socket.io').listen(httpServer)
+		var io = require('socket.io', {
+                'transports': config.socketIo_transports || ['websocket', 'flashsocket', 'xhr-polling']
+            }).listen(httpServer);
 
 		io.sockets.on('connection', function (socket) {
 		  socket.on('rpc', function (input,fn) {
